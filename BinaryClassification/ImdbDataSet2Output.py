@@ -14,11 +14,18 @@ def vectorize_sequences(sequences, dimension = 10000):
     for i, sequence in enumerate(sequences):
         res[i, sequence] = 1
     return res
-
+def vectorize_labels(labels):
+    res = np.zeros((len(labels), 2))
+    for l in range(len(labels)):
+        if labels[l] < 0.5:
+            res[l][0] = 1
+        else:
+            res[l][1] = 1
+    return res
 x_train = vectorize_sequences(train_data)
 x_test = vectorize_sequences(test_data)
-y_train = np.asarray(train_labels).astype('float32')
-y_test = np.asarray(test_labels).astype('float32')
+y_train = vectorize_labels(train_labels)#np.asarray(train_labels).astype('float32')
+y_test = vectorize_labels(test_labels)#np.asarray(test_labels).astype('float32')
 x_val = x_train[20000:]
 y_val = y_train[20000:]
 x_train = x_train[:20000]
@@ -27,12 +34,12 @@ y_train = y_train[:20000]
 from keras import models
 from keras import layers
 
-layer_activ = ['relu', 'relu', 'sigmoid']
+layer_activ = ['relu', 'relu', 'softmax']
 optim_loss = ['rmsprop', 'binary_crossentropy']
 model = models.Sequential()
 model.add(layers.Dense(16, activation=layer_activ[0], input_shape=(10000,)))
 model.add(layers.Dense(16, activation=layer_activ[1]))
-model.add(layers.Dense(1, activation=layer_activ[2]))
+model.add(layers.Dense(2, activation=layer_activ[2]))
 model.compile(optimizer=optim_loss[0], loss=optim_loss[1], metrics=['accuracy'])
 epoch_number = 10
 history = model.fit(x_train,y_train,epochs=epoch_number, batch_size=256,validation_data=(x_val,y_val))
@@ -44,7 +51,7 @@ val_loss_values = history_dict['val_loss']
 epochs = range(1, epoch_number + 1)
 plt.plot(epochs, loss_values, 'bo', label='Training loss')
 plt.plot(epochs, val_loss_values, 'b', label='Validation loss')
-fname = 'TrainingAndValidationLoss,[{},{},{}],optim={},loss={}'.format(layer_activ[0],layer_activ[1],layer_activ[2],optim_loss[0],optim_loss[1])
+fname = 'TrainingAndValidationLoss2out,[{},{},{}],optim={},loss={}'.format(layer_activ[0],layer_activ[1],layer_activ[2],optim_loss[0],optim_loss[1])
 plt.title(fname)
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
@@ -61,7 +68,7 @@ val_loss_values = history_dict['val_acc']
 epochs = range(1, epoch_number + 1)
 plt.plot(epochs, loss_values, 'bo', label='Training loss')
 plt.plot(epochs, val_loss_values, 'b', label='Validation loss')
-fname = 'TrainingAndValidationAcc,[{},{},{}],optim={},loss={}'.format(layer_activ[0],layer_activ[1],layer_activ[2],optim_loss[0],optim_loss[1])
+fname = 'TrainingAndValidationAcc2out,[{},{},{}],optim={},loss={}'.format(layer_activ[0],layer_activ[1],layer_activ[2],optim_loss[0],optim_loss[1])
 plt.title(fname)
 plt.xlabel('Epochs')
 plt.ylabel('Acc')
