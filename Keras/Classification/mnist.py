@@ -24,7 +24,7 @@ network.compile(optimizer='rmsprop',
                 loss='categorical_crossentropy',
                 metrics=['accuracy'])
 history = network.fit(train_images, train_labels, epochs=2, batch_size=32, validation_data=(test_images, test_labels))
-test_loss, test_acc = network.evaluate(test_images, test_labels)
+# test_loss, test_acc = network.evaluate(test_images, test_labels)
 
 # dict_keys(['val_loss', 'val_acc', 'loss', 'acc'])
 history_dict = history.history
@@ -55,3 +55,9 @@ plt.xlabel('Epochs')
 plt.ylabel('Acc')
 plt.legend()
 plt.show()
+
+network.save('model.h5')
+# json_model = network.to_json()
+# f = open("model.h5", "w")
+# f.write(json_model)
+# network.save_weights('weights.h5')
