@@ -9,7 +9,7 @@ test_images = test_images.reshape((10000, 28 * 28))
 test_images = test_images.astype('float32') / 255
 train_labels = to_categorical(train_labels)
 test_labels = to_categorical(test_labels)
-network = models.load_model("../BinaryClassification/model.h5")
+network = models.load_model("model.h5")
 
 test_loss, test_acc = network.evaluate(test_images, test_labels)
 print(test_loss, test_acc)

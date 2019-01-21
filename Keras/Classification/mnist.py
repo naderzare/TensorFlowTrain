@@ -24,7 +24,8 @@ network.compile(optimizer='rmsprop',
                 loss='categorical_crossentropy',
                 metrics=['accuracy'])
 history = network.fit(train_images, train_labels, epochs=2, batch_size=32, validation_data=(test_images, test_labels))
-# test_loss, test_acc = network.evaluate(test_images, test_labels)
+test_loss, test_acc = network.evaluate(test_images, test_labels)
+print('evaluate:', test_loss, test_acc)
 
 # dict_keys(['val_loss', 'val_acc', 'loss', 'acc'])
 history_dict = history.history
