@@ -17,7 +17,6 @@ train_labels = np.asarray(train_labels).astype('float32')
 test_data = vectorize_sequence(test_data, 1000)
 test_labels = np.asarray(test_labels).astype('float32')
 
-model = models.Sequential()
 network = models.load_model("model.h5")
 
 test_loss, test_acc = network.evaluate(test_data, test_labels)
