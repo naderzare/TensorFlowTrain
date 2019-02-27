@@ -25,7 +25,3 @@ for i in range(len(X1)):
 xout.close()
 yout.close()
 
-import matplotlib.pyplot as plt
-plt.clf()
-plt.scatter(X1, X2, c=Y)
-plt.show()

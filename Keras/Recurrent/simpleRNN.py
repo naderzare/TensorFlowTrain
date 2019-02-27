@@ -1,45 +1,44 @@
 from keras import layers, models, activations, losses, metrics, optimizers
 import matplotlib.pyplot as plt
 from numpy import array, random
-import numpy as np
+import random
 
-xin = open('xout', 'r')
-yin = open('yout', 'r')
+f = open('data.csv', 'r')
+L = f.readlines()
+X = [l.split(',')[0:3] for l in L]
+X = list(map(lambda x: [float(y) for y in x], X))
 
-x = xin.readlines()
-y = yin.readlines()
+Y = [l.split(',')[3] for l in L]
+Y = list(map(lambda y: float(y), Y))
 
-X = []
-Y = []
-for xx in x:
-    xxx = xx.split(' ')
-    X.append([float(xxx[0]), float(xxx[1])])
+r = list(range(len(Y)))
+random.shuffle(r)
+X = [X[x] for x in r]
+Y = [Y[x] for x in r]
 
-for xx in y:
-    Y.append(float(xx))
+train_number = int(len(Y) * 0.9)
+X_train = X[:train_number]
+Y_train = Y[:train_number]
+X_test = X[train_number:]
+Y_test = Y[train_number:]
 
-X = array(X)
-Y = array(Y)
-
-data_size = X.shape[0]
-train_size = int(data_size * 0.8)
-
-randomize = np.arange(len(x))
-np.random.shuffle(randomize)
-X = X[randomize]
-Y = Y[randomize]
-print(X.shape, train_size)
-train_datas = X[:train_size]
-train_labels = Y[:train_size]
-test_datas = X[train_size + 1:]
-test_labels = Y[train_size + 1:]
+use_recurrent = True
+if use_recurrent:
+    X_train = [[[t[0]], [t[1]], [t[2]]] for t in X_train]
+    X_test = [[[t[0]], [t[1]], [t[2]]] for t in X_test]
+X_train = array(X_train)
+X_test = array(X_test)
+Y_train = array(Y_train)
+Y_test = array(Y_test)
 
 network = models.Sequential()
-network.add(layers.Dense(20, activation=activations.relu, input_shape=(2,)))
+if use_recurrent:
+    network.add(layers.LSTM(3))
+network.add(layers.Dense(20, activation=activations.relu, input_shape=(3,)))
 network.add(layers.Dense(10, activation=activations.relu))
 network.add(layers.Dense(1, activation=activations.relu))
 network.compile(optimizer=optimizers.Adam(), loss=losses.mse, metrics=[metrics.mse])
-history = network.fit(train_datas, train_labels, epochs=100, batch_size=32, validation_data=(test_datas, test_labels))
+history = network.fit(X_train, Y_train, epochs=100, batch_size=32, validation_data=(X_test, Y_test))
 # test_loss, test_acc = network.evaluate(test_datas, test_labels)
 history_dict = history.history
 
@@ -66,5 +65,7 @@ plt.ylabel('Acc')
 plt.legend()
 plt.show()
 network.save('model.h5')
+
+
 
 

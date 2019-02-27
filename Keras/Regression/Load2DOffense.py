@@ -11,7 +11,7 @@ X = []
 Y = []
 for xx in x:
     xxx = xx.split(' ')
-    X.append([float(xxx[0]) / 52.5, float(xxx[1]) / 34.0])
+    X.append([float(xxx[0]), float(xxx[1])])
 
 for xx in y:
     Y.append(float(xx))
@@ -37,3 +37,4 @@ plt.clf()
 YY = YY.reshape((YY.shape[0]))
 plt.scatter(x1, x2, c=YY)
 plt.show()
+print(D/Y.shape[0] * 145)
